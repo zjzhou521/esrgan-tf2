@@ -13,9 +13,6 @@ from modules.models import RRDB_Model
 from modules.utils import (load_yaml, tensor2img, create_lr_hr_pair,
                            change_weight)
 
-
-
-
 flags.DEFINE_string('cfg_path1', './configs/psnr.yaml', 'config file path 1')
 flags.DEFINE_string('cfg_path2', './configs/esrgan.yaml', 'config file path 2')
 flags.DEFINE_string('gpu', '0', 'which gpu to use')
