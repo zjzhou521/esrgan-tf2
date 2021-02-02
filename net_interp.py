@@ -1,4 +1,3 @@
-
 """Implementation network interpolation and image interpolation proposed
    from ESRGAN paper."""
 from absl import app, flags, logging
