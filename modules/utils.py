@@ -262,7 +262,7 @@ def _calculate_weights_indices(in_length, out_length, scale, kernel,
     indices = indices + sym_len_s - 1
     return weights, indices, int(sym_len_s), int(sym_len_e)
 
-
+# get PSNR
 def calculate_psnr(img1, img2):
     # img1 and img2 have range [0, 255]
     img1 = img1.astype(np.float64)
@@ -295,7 +295,7 @@ def _ssim(img1, img2):
         / ((mu1_sq + mu2_sq + C1) * (sigma1_sq + sigma2_sq + C2))
     return ssim_map.mean()
 
-
+#get SSIM
 def calculate_ssim(img1, img2):
     '''calculate SSIM
     the same outputs as MATLAB's

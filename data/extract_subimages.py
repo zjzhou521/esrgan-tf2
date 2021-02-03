@@ -14,7 +14,7 @@ from shutil import get_terminal_size
 
 sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
 
-
+# cropped HR patch is 128 × 128
 def main():
     mode = 'pair'  # single (one input folder) | pair (extract corresponding GT and LR pairs)
     opt = {}
@@ -39,7 +39,6 @@ def main():
         step = 240  # step of the sliding crop window (GT)
         thres_sz = 48  # size threshold
         ########################################################################
-        # check that all the GT and LR images have correct scale ratio
         img_GT_list = _get_paths_from_images(GT_folder)
         img_LR_list = _get_paths_from_images(LR_folder)
         assert len(img_GT_list) == len(img_LR_list), 'different length of GT_folder and LR_folder.'
@@ -48,6 +47,7 @@ def main():
             img_LR = Image.open(path_LR)
             w_GT, h_GT = img_GT.size
             w_LR, h_LR = img_LR.size
+            # double check if the scale ratio is right
             assert w_GT / w_LR == scale_ratio, 'GT width [{:d}] is not {:d}X as LR weight [{:d}] for {:s}.'.format(  # noqa: E501
                 w_GT, scale_ratio, w_LR, path_GT)
             assert w_GT / w_LR == scale_ratio, 'GT width [{:d}] is not {:d}X as LR weight [{:d}] for {:s}.'.format(  # noqa: E501

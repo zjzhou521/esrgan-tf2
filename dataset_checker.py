@@ -7,7 +7,7 @@ from modules.dataset import load_tfrecord_dataset
 
 
 flags.DEFINE_boolean('using_bin', True, 'whether use binary file or not')
-flags.DEFINE_boolean('visualization', True, 'whether visualize dataset or not')
+flags.DEFINE_boolean('visualization', False, 'whether visualize dataset or not')
 
 
 def main(_):
@@ -26,10 +26,8 @@ def main(_):
         print("{} inputs:".format(idx), inputs.shape, "outputs:", labels.shape)
 
         if FLAGS.visualization:
-            cv2.imshow('inputs', cv2.cvtColor(inputs[0].numpy(),
-                       cv2.COLOR_RGB2BGR))
-            cv2.imshow('labels', cv2.cvtColor(labels[0].numpy(),
-                       cv2.COLOR_RGB2BGR))
+            cv2.imshow('inputs', cv2.cvtColor(inputs[0].numpy(),cv2.COLOR_RGB2BGR))
+            cv2.imshow('labels', cv2.cvtColor(labels[0].numpy(),cv2.COLOR_RGB2BGR))
 
             if cv2.waitKey(0) == ord('q'):
                 exit()
@@ -39,3 +37,4 @@ def main(_):
 
 if __name__ == '__main__':
     app.run(main)
+    #inputs: (16, 32, 32, 3) outputs: (16, 128, 128, 3)

@@ -4,7 +4,7 @@ input_size: 32
 gt_size: 128
 ch_size: 3
 scale: 4
-sub_name: 'esrgan'
+sub_name: 'esrgan_inference'
 pretrain_name: 'psnr_pretrain'
 
 # generator setting
@@ -47,5 +47,4 @@ feature_criterion: l1
 
 w_gan: !!float 5e-3
 gan_type: ragan  # gan | ragan
-
 save_steps: 5000

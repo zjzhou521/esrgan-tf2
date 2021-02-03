@@ -34,6 +34,7 @@ class BatchNormalization(tf.keras.layers.BatchNormalization):
 
 class ResDenseBlock_5C(tf.keras.layers.Layer):
     """Residual Dense Block"""
+    # denseblock = 4*(Conv+LReLU) + Conv
     def __init__(self, nf=64, gc=32, res_beta=0.2, wd=0., name='RDB5C',
                  **kwargs):
         super(ResDenseBlock_5C, self).__init__(name=name, **kwargs)
@@ -60,20 +61,20 @@ class ResDenseBlock_5C(tf.keras.layers.Layer):
 
 
 class ResInResDenseBlock(tf.keras.layers.Layer):
-    """Residual in Residual Dense Block"""
+    # RRDB module (Residual in Residual Dense Block)
     def __init__(self, nf=64, gc=32, res_beta=0.2, wd=0., name='RRDB',
                  **kwargs):
         super(ResInResDenseBlock, self).__init__(name=name, **kwargs)
         self.res_beta = res_beta
+        # 3 denseblocks
         self.rdb_1 = ResDenseBlock_5C(nf, gc, res_beta=res_beta, wd=wd)
         self.rdb_2 = ResDenseBlock_5C(nf, gc, res_beta=res_beta, wd=wd)
         self.rdb_3 = ResDenseBlock_5C(nf, gc, res_beta=res_beta, wd=wd)
-
     def call(self, x):
         out = self.rdb_1(x)
         out = self.rdb_2(out)
         out = self.rdb_3(out)
-        return out * self.res_beta + x
+        return out * self.res_beta + x # res with 3 denseblocks
 
 
 def RRDB_Model(size, channels, cfg_net, gc=32, wd=0., name='RRDB_model'):
@@ -99,12 +100,14 @@ def RRDB_Model(size, channels, cfg_net, gc=32, wd=0., name='RRDB_model'):
     # upsampling
     size_fea_h = tf.shape(fea)[1] if size is None else size
     size_fea_w = tf.shape(fea)[2] if size is None else size
+    # Nearest Method (simple linear interpolation)
     fea_resize = tf.image.resize(fea, [size_fea_h * 2, size_fea_w * 2],
                                  method='nearest', name='upsample_nn_1')
     fea = conv_f(filters=nf, activation=lrelu_f(), name='upconv_1')(fea_resize)
     fea_resize = tf.image.resize(fea, [size_fea_h * 4, size_fea_w * 4],
                                  method='nearest', name='upsample_nn_2')
     fea = conv_f(filters=nf, activation=lrelu_f(), name='upconv_2')(fea_resize)
+    
     fea = conv_f(filters=nf, activation=lrelu_f(), name='conv_hr')(fea)
     out = conv_f(filters=channels, name='conv_last')(fea)
 
