@@ -4,7 +4,7 @@ input_size: 32
 gt_size: 128
 ch_size: 3
 scale: 4
-sub_name: 'esrgan_inference'
+sub_name: 'esrgan'
 pretrain_name: 'psnr_pretrain'
 
 # generator setting

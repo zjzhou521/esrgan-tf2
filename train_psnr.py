@@ -9,7 +9,7 @@ from modules.losses import PixelLoss
 from modules.utils import (load_yaml, load_dataset, ProgressBar,
                            set_memory_growth)
 flags.DEFINE_string('cfg_path', './configs/psnr.yaml', 'config file path')
-flags.DEFINE_string('gpu', '0', 'which gpu to use')
+flags.DEFINE_string('gpu', '1', 'which gpu to use')
 
 def main(_):
     # init
