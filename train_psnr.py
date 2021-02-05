@@ -8,6 +8,7 @@ from modules.lr_scheduler import MultiStepLR
 from modules.losses import PixelLoss
 from modules.utils import (load_yaml, load_dataset, ProgressBar,
                            set_memory_growth)
+import time
 flags.DEFINE_string('cfg_path', './configs/psnr.yaml', 'config file path')
 flags.DEFINE_string('gpu', '1', 'which gpu to use')
 
@@ -72,16 +73,19 @@ def main(_):
     # training loop
     summary_writer = tf.summary.create_file_writer(
         './logs/' + cfg['sub_name'])
-    prog_bar = ProgressBar(cfg['niter'], checkpoint.step.numpy())
+    # prog_bar = ProgressBar(cfg['niter'], checkpoint.step.numpy())
     remain_steps = max(cfg['niter'] - checkpoint.step.numpy(), 0)
     # start training
     for lr, hr in train_dataset.take(remain_steps):
+        t_start = time.time()
         checkpoint.step.assign_add(1)
         steps = checkpoint.step.numpy()
         total_loss, losses = train_step(lr, hr)
         # visualize
-        prog_bar.update("loss={:.4f}, lr={:.1e}".format(
-            total_loss.numpy(), optimizer.lr(steps).numpy()))
+        # prog_bar.update("loss={:.4f}, lr={:.1e}".format(total_loss.numpy(), optimizer.lr(steps).numpy()))
+        stps_epoch = int(cfg['train_dataset']['num_samples']/cfg['batch_size'])
+        t_end = time.time()
+        print("epoch=%3d step=%3d/%d loss=%3.4f lr=%.5f stp_time=%.3f"%(int(steps/stps_epoch),int(steps%stps_epoch),stps_epoch,total_loss.numpy(),optimizer.lr(steps).numpy(),t_end-t_start))
         if steps % 10 == 0:
             with summary_writer.as_default():
                 tf.summary.scalar('loss/total_loss', total_loss, step=steps)
@@ -89,7 +93,7 @@ def main(_):
                     tf.summary.scalar('loss/{}'.format(k), l, step=steps)
                 tf.summary.scalar('learning_rate', optimizer.lr(steps), step=steps)
         # save checkpoint
-        if steps % cfg['save_steps'] == 0:
+        if(steps % stps_epoch == 0):
             manager.save()
             print("\n[*] save ckpt file at {}".format(
                 manager.latest_checkpoint))

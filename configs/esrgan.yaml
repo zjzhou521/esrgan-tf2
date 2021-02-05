@@ -1,5 +1,5 @@
 # general setting
-batch_size: 16
+batch_size: 32
 input_size: 32
 gt_size: 128
 ch_size: 3
@@ -47,4 +47,4 @@ feature_criterion: l1
 
 w_gan: !!float 5e-3
 gan_type: ragan  # gan | ragan
-save_steps: 5000
+save_steps: 500

@@ -1,5 +1,5 @@
 # general setting
-batch_size: 16
+batch_size: 128
 input_size: 32
 gt_size: 128
 ch_size: 3
@@ -35,4 +35,4 @@ adam_beta2_G: 0.99
 w_pixel: 1.0
 pixel_criterion: l1
 
-save_steps: 5000
+save_steps: 1000
