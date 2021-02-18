@@ -47,7 +47,7 @@ def main(_):
                                      model=model)
     manager = tf.train.CheckpointManager(checkpoint=checkpoint,
                                          directory=checkpoint_dir,
-                                         max_to_keep=3)
+                                         max_to_keep=50)
     if manager.latest_checkpoint:
         checkpoint.restore(manager.latest_checkpoint)
         print('[*] load ckpt from {} at step {}.'.format(
@@ -87,7 +87,7 @@ def main(_):
         # prog_bar.update("loss={:.4f}, lr={:.1e}".format(total_loss.numpy(), optimizer.lr(steps).numpy()))
         stps_epoch = int(cfg['train_dataset']['num_samples']/cfg['batch_size'])
         t_end = time.time()
-        print("epoch=%3d step=%3d/%d loss=%3.4f lr=%.5f stp_time=%.3f cnter=%6d"%(int(steps/stps_epoch),int(steps%stps_epoch),stps_epoch,total_loss.numpy(),optimizer.lr(steps).numpy(),t_end-t_start,cnter))
+        print("epoch=%3d step=%4d/%d loss=%3.4f lr=%.5f stp_time=%.3f cnter=%6d"%(int(steps/stps_epoch),int(steps%stps_epoch),stps_epoch,total_loss.numpy(),optimizer.lr(steps).numpy(),t_end-t_start,cnter))
         if steps % 10 == 0:
             with summary_writer.as_default():
                 tf.summary.scalar('loss/total_loss', total_loss, step=steps)
