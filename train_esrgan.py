@@ -107,8 +107,10 @@ def main(_):
         './logs/' + cfg['sub_name'])
     # prog_bar = ProgressBar(cfg['niter'], checkpoint.step.numpy())
     remain_steps = max(cfg['niter'] - checkpoint.step.numpy(), 0)
+    cnter = remain_steps
     # start training
     for lr, hr in train_dataset.take(remain_steps):
+        cnter -= 1
         t_start = time.time()
         checkpoint.step.assign_add(1)
         steps = checkpoint.step.numpy()
@@ -117,7 +119,7 @@ def main(_):
         # prog_bar.update("loss_G={:.4f}, loss_D={:.4f}, lr_G={:.1e}, lr_D={:.1e}".format(total_loss_G.numpy(), total_loss_D.numpy(),optimizer_G.lr(steps).numpy(), optimizer_D.lr(steps).numpy()))
         stps_epoch = int(cfg['train_dataset']['num_samples']/cfg['batch_size'])
         t_end = time.time()
-        print("epoch=%3d step=%3d/%d G_loss=%3.4f D_loss=%3.4f G_lr=%.5f D_lr=%.5f stp_time=%.3f"%(int(steps/stps_epoch),int(steps%stps_epoch),stps_epoch,total_loss_G.numpy(),total_loss_D.numpy(),optimizer_G.lr(steps).numpy(),optimizer_D.lr(steps).numpy(),t_end-t_start))
+        print("epoch=%3d step=%3d/%d G_loss=%3.4f D_loss=%3.4f G_lr=%.5f D_lr=%.5f stp_time=%.3f cnter=%6d"%(int(steps/stps_epoch),int(steps%stps_epoch),stps_epoch,total_loss_G.numpy(),total_loss_D.numpy(),optimizer_G.lr(steps).numpy(),optimizer_D.lr(steps).numpy(),t_end-t_start,cnter))
         if steps % 10 == 0:
             with summary_writer.as_default():
                 tf.summary.scalar('loss_G/total_loss', total_loss_G, step=steps)
